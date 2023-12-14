@@ -26,7 +26,12 @@ public isolated function generateSmartConfiguration() returns SmartConfiguration
     OpenIDConfiguration openIdConfigurations = {};
     string? discoveryEndpoint = configs.discoveryEndpoint;
     if discoveryEndpoint is string && discoveryEndpoint != "" {
-        openIdConfigurations = check getOpenidConfigurations(discoveryEndpoint).cloneReadOnly();
+        OpenIDConfiguration|error openIdConfigsDiscovered = check getOpenidConfigurations(discoveryEndpoint).cloneReadOnly();
+        if openIdConfigsDiscovered is OpenIDConfiguration {
+            openIdConfigurations = openIdConfigsDiscovered;
+        } else {
+            log:printError(string `Error while getting OpenID configurations from discovery endpoint: ${openIdConfigsDiscovered.stackTrace().toString()}`);
+        }
     } else {
         log:printDebug(string `${VALUE_NOT_FOUND}: discoveryEndpoint`);
     }

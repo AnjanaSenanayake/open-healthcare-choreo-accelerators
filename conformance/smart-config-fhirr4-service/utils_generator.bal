@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/io;
 import ballerina/log;
 import ballerina/url;
 
@@ -24,11 +23,10 @@ import ballerina/url;
 # + discoveryEndpoint - Discovery endpoint
 # + return - If successful, returns OpenID configuration as a json. Else returns error.
 public isolated function getOpenidConfigurations(string discoveryEndpoint) returns OpenIDConfiguration|error {
-    log:printDebug("Retrieving openid configuration started");
+    log:printInfo("Retrieving openid configuration started");
     string discoveryEndpointUrl = check url:decode(discoveryEndpoint, "UTF8");
-    io:print(discoveryEndpointUrl);
     http:Client discoveryEpClient = check new (discoveryEndpointUrl.toString());
-    OpenIDConfiguration openidConfiguration = check discoveryEpClient ->/;
-    log:printDebug("Retrieving openid configuration ended");
+    OpenIDConfiguration openidConfiguration = check discoveryEpClient -> get("/");
+    log:printInfo("Retrieving openid configuration ended");
     return openidConfiguration;
 }
