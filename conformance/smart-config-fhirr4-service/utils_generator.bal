@@ -16,12 +16,14 @@
 
 import ballerina/http;
 import ballerina/log;
+import ballerina/observe;
 import ballerina/url;
 
 # Call the discovery endpoint to get the OpenID configuration.
 #
 # + discoveryEndpoint - Discovery endpoint
 # + return - If successful, returns OpenID configuration as a json. Else returns error.
+@observe:Observable
 public isolated function getOpenidConfigurations(string discoveryEndpoint) returns OpenIDConfiguration|error {
     log:printInfo("Retrieving openid configuration started");
     string discoveryEndpointUrl = check url:decode(discoveryEndpoint, "UTF8");
